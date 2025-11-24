@@ -12,7 +12,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'petshop'   // troque para o nome do seu banco
+    database: 'boizinhos_db'   
 });
 
 // ROTA PARA LISTAR OS DADOS

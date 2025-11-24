@@ -16,7 +16,7 @@ document.getElementById('dataForm').addEventListener('submit', function (event) 
     .then(data => {
         if (data.success) {
             alert('Dados enviados com sucesso!');
-            carregarTabela(); // atualiza a tabela após inserir
+            carregarTabela(); 
         } else {
             alert('Erro ao enviar dados.');
         }
@@ -95,7 +95,7 @@ function carregarTabela() {
         });
 }
 
-// CHAMA AUTOMATICAMENTE AO ABRIR A PÁGINA
+
 carregarTabela();
 
 
