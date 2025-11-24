@@ -60,9 +60,6 @@ function carregarTabela() {
         });
 }
 
-// Carrega a tabela quando abrir a página
-carregarTabela();
-
 function carregarTabela() {
     fetch('http://localhost:3000/listar')
         .then(res => res.json())
@@ -77,7 +74,6 @@ function carregarTabela() {
                         <th>Raça</th>
                         <th>Sexo</th>
                         <th>Telefone</th>
-                        <th>Ações</th>
                     </tr>
             `;
 
@@ -90,21 +86,18 @@ function carregarTabela() {
                         <td>${item.raca}</td>
                         <td>${item.sexo}</td>
                         <td>${item.phone}</td>
-                        <td>
-                            <button onclick="editarRegistro(${item.id})">Editar</button>
-                            <button onclick="excluirRegistro(${item.id})">Excluir</button>
-                        </td>
                     </tr>
                 `;
             });
 
             html += `</table>`;
-
             document.getElementById('lista').innerHTML = html;
         });
 }
 
+// CHAMA AUTOMATICAMENTE AO ABRIR A PÁGINA
 carregarTabela();
+
 
 function excluirRegistro(id) {
     if (!confirm('Tem certeza que deseja excluir?')) return;
