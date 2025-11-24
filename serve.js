@@ -1,60 +1,80 @@
 const express = require('express');
-const mysql = require('mysql');
-const multer = require('multer');
-const path = require('path');
+const mysql = require('mysql2');
+const cors = require('cors');
 
-// Criação do servidor Express
 const app = express();
-const port = 3000;
-
-// Configuração do MySQL
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // Altere com seu usuário
-  password: '', // Altere com sua senha
-  database: 'animais', // Nome do seu banco de dados
-});
-
-db.connect((err) => {
-  if (err) throw err;
-  console.log('Conectado ao banco de dados!');
-
-});
-
-// Configuração do multer para upload de arquivos
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Diretório para salvar os arquivos
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Nome único para o arquivo
-  },
-});
-
-const upload = multer({ storage });
-
-// Configuração do middleware para processar dados JSON
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rota para adicionar os dados com arquivo
-app.post('/upload', upload.single('attachment'), (req, res) => {
-  const { nomeanimal, nomedono, raça, sexo, phone } = req.body;
-  const attachment = req.file ? req.file.path : null;
-
-  // Inserir no banco de dados
-  const query = 'INSERT INTO sua_tabela (nomeanimal, nomedono, raça, sexo, phone) VALUES (?, ?, ?, ?, ?)';
-  db.query(query, [nomeanimal, nomedono, raça, sexo, phone], (err, result) => {
-    if (err) {
-      console.error('Erro ao inserir dados:', err);
-      res.status(500).json({ success: false, message: 'Erro ao gravar dados no banco' });
-    } else {
-      res.json({ success: true, message: 'Dados gravados com sucesso!', data: result });
-    }
-  });
+// Conexão com MySQL
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'petshop'
 });
 
-// Iniciar o servidor
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+// Rota para inserir dados
+app.post('/upload', (req, res) => {
+    const { nomeanimal, nomedono, raca, sexo, phone } = req.body;
+
+    const sql = `
+        INSERT INTO animais (nomeanimal, nomedono, raca, sexo, phone)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    db.query(sql, [nomeanimal, nomedono, raca, sexo, phone], (err) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false });
+        }
+        res.json({ success: true });
+    });
+});
+
+// Rota para listar os dados
+app.get('/listar', (req, res) => {
+    db.query('SELECT * FROM animais', (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.json([]);
+        }
+        res.json(results);
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Servidor rodando em http://localhost:3000');
+});
+
+app.delete('/excluir/:id', (req, res) => {
+    const id = req.params.id;
+
+    db.query('DELETE FROM animais WHERE id = ?', [id], (err) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false });
+        }
+        res.json({ success: true });
+    });
+});
+
+app.put('/editar/:id', (req, res) => {
+    const id = req.params.id;
+    const { nomeanimal, nomedono, raca, sexo, phone } = req.body;
+
+    const sql = `
+        UPDATE animais 
+        SET nomeanimal = ?, nomedono = ?, raca = ?, sexo = ?, phone = ?
+        WHERE id = ?
+    `;
+
+    db.query(sql, [nomeanimal, nomedono, raca, sexo, phone, id], (err) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false });
+        }
+        res.json({ success: true });
+    });
 });

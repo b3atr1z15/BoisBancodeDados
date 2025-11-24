@@ -73,4 +73,37 @@ body {
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
+#tabela-container {
+    width: 90%;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#tabela-container h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+button {
+    padding: 6px 10px;
+    margin: 3px;
+    background-color: #1f7a45;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
